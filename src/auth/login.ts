@@ -1,6 +1,7 @@
 "use client";
 
-import { LoginData, LoginResult, RefreshToken, User } from "@/types";
+import { LoginData, LoginResult, RefreshToken, Token, User } from "@/types";
+import { get } from "http";
 import { UserMinus } from "lucide-react";
 import { flightRouterStateSchema } from "next/dist/server/app-render/types";
 import { TURBO_TRACE_DEFAULT_MEMORY_LIMIT } from "next/dist/shared/lib/constants";
@@ -79,6 +80,7 @@ function setRefreshToken(token: RefreshToken) {
 }
 
 function getToken() {
+    validateToken();
     return localStorage?.getItem("AUTH_TOKEN");
 }
 
@@ -103,6 +105,27 @@ function isLoggedIn() {
     }
 
     return true;
+}
+
+function getTokenObj() {
+    const token = getToken();
+    if (!token) return;
+    const tokenstr = atob(token);
+    const tokenObj = JSON.parse(tokenstr) as Token;
+
+    return tokenObj;
+}
+
+function validateToken() {
+    const token = localStorage?.getItem("AUTH_TOKEN");
+    if (!token) return false;
+    const tokenstr = atob(token);
+    const tokenObj = JSON.parse(tokenstr) as Token;
+
+    if (tokenObj.ExpirationDate < new Date().toISOString()) {
+        localStorage.removeItem("AUTH_TOKEN");
+        getNewToken();
+    }
 }
 
 export { login, getToken, isLoggedIn, getMe };

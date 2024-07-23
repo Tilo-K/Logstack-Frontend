@@ -28,3 +28,18 @@ export interface User {
     email: string;
     admin: boolean;
 }
+
+export interface Project {
+    id: string;
+    name: string;
+    secret: string;
+    creationDate: string;
+}
+
+export interface Token{
+    UserId: string;
+    ProjectAccess: string[];
+    ExpirationDate: string;
+    Admin: boolean;
+    Hash: string;
+}
