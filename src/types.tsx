@@ -43,3 +43,17 @@ export interface Token{
     Admin: boolean;
     Hash: string;
 }
+
+export interface Log {
+    id: string;
+    projectId: string;
+    logLevel: string;
+    time: string;
+    content: string;
+    origin: string;
+}
+
+export interface FilterOptions {
+    origins: string[];
+    logLevels: string[];
+}

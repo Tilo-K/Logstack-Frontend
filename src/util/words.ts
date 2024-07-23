@@ -1349,7 +1349,7 @@ export const adjectives = [
 ];
 
 export const nouns = [
-    "    people",
+    "people",
     "history",
     "way",
     "art",

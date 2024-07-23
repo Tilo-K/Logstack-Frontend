@@ -14,11 +14,16 @@ import React, { useEffect } from "react";
 import DeleteDialog from "./deleteDialog";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
+import { getLogCount } from "@/logs/logs";
 
 export default function ProjectsPage() {
     const [projects, setProjects] = React.useState<Project[]>([]);
+    const [logCount, setLogCount] = React.useState<Map<string, number>>(
+        new Map()
+    );
+
     const router = useRouter();
-    const { toast } = useToast()
+    const { toast } = useToast();
 
     useEffect(() => {
         getProjects().then((projects) => {
@@ -26,15 +31,24 @@ export default function ProjectsPage() {
         });
     }, []);
 
+    useEffect(() => {
+        for (const project of projects) {
+            getLogCount(project.id, project.secret).then((count) => {
+                setLogCount(new Map(logCount.set(project.id, count)));
+            });
+        }
+    }, [projects]);
+
     return (
-        <div className="p-4">
+        <div className="p-4 flex flex-col gap-4">
             {projects.map((project) => (
                 <Card key={project.id}>
                     <CardHeader>
                         <CardTitle>Project: {project.name}</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p>Log entries: {";("}</p>
+                        <p>Id: {project.id}</p>
+                        <p>Log entries: {logCount.get(project.id)}</p>
                         <p>
                             Creation Date:{" "}
                             {new Date(project.creationDate).toLocaleString()}
@@ -55,7 +69,8 @@ export default function ProjectsPage() {
                                 navigator.clipboard.writeText(project.secret);
                                 toast({
                                     title: "Copied to clipboard",
-                                    description: "The secret has been copied to your clipboard",
+                                    description:
+                                        "The secret has been copied to your clipboard",
                                     variant: "default",
                                 });
                             }}

@@ -17,7 +17,7 @@ import {
   } from "@/components/ui/dialog"
 import { Label } from "@radix-ui/react-label";
 import { namePlaceholder } from "@/util/placeholder";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { createProject } from "@/projects/projects";
 import ProjectDialog from "./dialog";
 const inter = Inter({ subsets: ["latin"] });
@@ -69,7 +69,7 @@ export default function RootLayout({
                 <header className="flex h-14 items-center justify-end gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
                     <ProjectDialog />
                 </header>
-                {children}
+                <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
             </div>
         </div>
     );
